@@ -1,7 +1,7 @@
-import { createClient } from '@supabase/supabase-js'
-import 'dotenv/config'
-const { SUPABASE_DB_API_KEY : key, SUPABASE_DB_URL : url } = process.env
-export const supabase = createClient(url, key);
+const { createClient } = require('@supabase/supabase-js');
+require('dotenv/config').config
+const { SUPABASE_DB_API_KEY : key, SUPABASE_DB_URL : url } = process.env;
+const supabase = createClient(url, key);
 
 async function getPlacesByType(type) {
     try {
@@ -34,5 +34,7 @@ async function addCar() {
     }
 }
 
+module.exports = getPlacesByType;
+
 // addCar();
-console.log(await getPlacesByType('citadine'))
+// console.log(await getPlacesByType('citadine'))
