@@ -2,7 +2,8 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.48.1",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "nodemon": "^3.1.9"
   },
   "name": "essaijs",
   "version": "1.0.0",
