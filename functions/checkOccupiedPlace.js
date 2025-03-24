@@ -26,7 +26,7 @@ async function checkOccupiedPlace(id_place) {
         return data.length>0;
     } catch (error) {
         console.log(error);
-        return [];
+        return false;
     }
 }
 

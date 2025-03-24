@@ -18,7 +18,7 @@ async function addCar(plaque, type) {
         if (error) throw error;
         return data;
     } catch (error) {
-        console.error(error);
+        console.log(error);
         throw error;
     }
 }
