@@ -13,6 +13,30 @@ app.get('/', (req, res) => {
     res.send('Hello World!')
 })
 
+app.post('/voiture/new', async (req, res) => {
+    const { plaque, type } = req.body
+    if ( !plaque, !type) {
+        return res.status(400).json({ error: "Tous les champs sont requis." });
+    }
+
+    try {
+        const { data, error } = await supabase
+            .from('voitures')
+            .insert([{ 
+                plaque, 
+                type
+            }])
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        res.status(201).json({ message: "Voiture ajoutée avec succès", reservation: data });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 app.get('/parking', async (req, res) => {
     const { data, error } = await supabase
     .from('stationnements')
