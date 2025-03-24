@@ -6,18 +6,59 @@ const express = require('express')
 const app = express()
 const port = 3000
 
+app.use(express.json());
+app.use(express.urlencoded({extended:true}))
+
 app.get('/', (req, res) => {
     res.send('Hello World!')
 })
 
-app.get('/parking', (req, res) => {
-    res.send('parking')
+app.get('/parking', async (req, res) => {
+    const { data, error } = await supabase
+    .from('stationnements')
+    .select()
+    res.send(data);
 })
+
+app.post('/parking/new', async (req, res) => {
+    console.log(req.body);
+    const { id_reservation, date_effective_arrivee } = req.body
+
+    console.log( id_reservation, date_effective_arrivee);
+
+    if ( !id_reservation, !date_effective_arrivee) {
+        return res.status(400).json({ error: "Tous les champs sont requis." });
+    }
+
+    try {
+        const { data, error } = await supabase
+            .from('stationnements')
+            .insert([{ 
+                reservation: id_reservation, 
+                date_effective_arrivee
+            }])
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        res.status(201).json({ message: "Stationnement ajoutée avec succès", reservation: data });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
 
 app.get('/reservations', async (req, res) => {
     const { data, error } = await supabase
     .from('reservations')
-    .select()
+    .select(`
+        *,
+        voiture(*),
+        place(*),
+        stationnements(*)
+    `)
     res.send(data);
 })
 
@@ -37,9 +78,36 @@ app.get('/reservations/:id', async (req, res) => {
     res.json(data);
 })
 
-app.post('/reservations/new', (req, res) => {
-    res.send('Hello World!')
-})
+app.post('/reservations/new', async (req, res) => {
+    console.log(req.body);
+    const { id_voiture, id_place, date_reservation, date_prevue_arrivee, date_prevue_depart } = req.body
+
+    console.log(id_voiture, id_place, date_reservation, date_prevue_arrivee, date_prevue_depart);
+
+    if (!id_voiture || !id_place || !date_reservation || !date_prevue_arrivee || !date_prevue_depart) {
+        return res.status(400).json({ error: "Tous les champs sont requis." });
+    }
+
+    try {
+        const { data, error } = await supabase
+            .from('reservations')
+            .insert([{ 
+                voiture: id_voiture, 
+                place: id_place, 
+                date_reservation,
+                date_prevue_arrivee,
+                date_prevue_depart
+            }])
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        res.status(201).json({ message: "Réservation ajoutée avec succès", reservation: data });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 app.get('/place', async (req, res) => {
     const { data, error } = await supabase
