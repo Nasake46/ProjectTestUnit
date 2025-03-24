@@ -1,0 +1,1 @@
+const filterPlaces = require("../functions/filterPlaces");
